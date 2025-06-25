@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
 import './App.css';
 
-const socket = io('https://quickchat-78zv.onrender.com/');
+const socket = io(import.meta.env.VITE_SOCKET_SERVER_URL);
 
 function App() {
   const [username, setUsername] = useState('');
