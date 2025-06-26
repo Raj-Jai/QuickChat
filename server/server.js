@@ -8,8 +8,12 @@ app.use(cors());
 
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: { origin: '*' },
+  cors: {
+    origin: ['https://quickchat-jrcode.vercel.app/'], // only allow this frontend
+    methods: ['GET', 'POST']
+  }
 });
+
 
 // roomID -> { users: [{ id, username, userID }], messages: [] }
 const rooms = new Map();
@@ -84,7 +88,6 @@ io.on('connection', (socket) => {
   });
 });
 
-const PORT = process.env.PORT || 4000;
-server.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+server.listen(4000, () => {
+  console.log('Server running on http://localhost:4000');
 });
