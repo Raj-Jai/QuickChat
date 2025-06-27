@@ -1,6 +1,8 @@
 const express = require('express');
 const http = require('http');
-const { Server } = require('socket.io');
+const {
+  Server
+} = require('socket.io');
 const cors = require('cors');
 
 const app = express();
@@ -9,9 +11,11 @@ app.use(cors());
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    // origin: process.env.SOCKET_ORIGIN || '*',
-    origin:"https://quickchat-jrcode.vercel.app",
-    methods: ["GET", "POST"] 
+    origin: process.env.SOCKET_ORIGIN || "*",
+    origin: ["https://quickchat-78zv.onrender.com",
+      "https://<YOUR-VERCEL-APP>.vercel.app"
+    ],
+    methods: ["GET", "POST"]
   },
 });
 
@@ -31,38 +35,72 @@ io.on('connection', (socket) => {
   });
 
   socket.on('create-room', (roomID, cb) => {
-    if (rooms.has(roomID)) return cb({ success: false, message: 'Room already exists!' });
-    rooms.set(roomID, { users: [], messages: [] });
-    cb({ success: true });
+    if (rooms.has(roomID)) return cb({
+      success: false,
+      message: 'Room already exists!'
+    });
+    rooms.set(roomID, {
+      users: [],
+      messages: []
+    });
+    console.log("Room crated:",roomID);
+    cb({
+      success: true
+    });
   });
 
-  socket.on('join-room', ({ roomID, username }, cb) => {
-  const room = rooms.get(roomID);
-  if (!room) return cb({ success: false, message: 'Room does not exist!' });
+  socket.on('join-room', ({
+    roomID,
+    username
+  }, cb) => {
+    const room = rooms.get(roomID);
+    if (!room) return cb({
+      success: false,
+      message: 'Room does not exist!'
+    });
 
-  socket.join(roomID);
-  socket.roomID = roomID;
-  socket.username = username;
+    socket.join(roomID);
+    socket.roomID = roomID;
+    socket.username = username;
 
-  room.users.push({ id: socket.id, username, userID: socket.userID });
-  cb({ success: true });
+    room.users.push({
+      id: socket.id,
+      username,
+      userID: socket.userID
+    });
+    cb({
+      success: true
+    });
 
-  io.to(roomID).emit('update-users', room.users.map((u) => u.username)); // ✅ Add this line
-  socket.emit('previous-messages', room.messages);
-});
+    io.to(roomID).emit('update-users', room.users.map((u) => u.username)); // ✅ Add this line
+    socket.emit('previous-messages', room.messages);
+  });
 
-  socket.on('send-message', ({ roomID, message, username, timestamp }) => {
+  socket.on('send-message', ({
+    roomID,
+    message,
+    username,
+    timestamp
+  }) => {
     const room = rooms.get(roomID);
     if (!room) return;
 
-    const msg = { username, message, timestamp };
+    const msg = {
+      username,
+      message,
+      timestamp
+    };
     room.messages.push(msg);
     if (room.messages.length > 100) room.messages.shift();
 
     socket.to(roomID).emit('receive-message', msg);
   });
 
-  socket.on('typing', ({ roomID, username, typing }) => {
+  socket.on('typing', ({
+    roomID,
+    username,
+    typing
+  }) => {
     if (typing) {
       socket.to(roomID).emit('user-typing', username);
     } else {
