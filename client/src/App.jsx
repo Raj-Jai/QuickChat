@@ -2,12 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
 import './App.css';
 
-<<<<<<< HEAD
 const socket = io("https://quickchat-78zv.onrender.com");
 // const socket = io('http://localhost:4000');
-=======
-const socket = io(import.meta.env.VITE_SOCKET_SERVER_URL);
->>>>>>> parent of fa4771d (updated socket)
 
 function App() {
   const [username, setUsername] = useState('');
