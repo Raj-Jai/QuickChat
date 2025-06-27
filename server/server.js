@@ -13,7 +13,7 @@ const io = new Server(server, {
   cors: {
     origin: process.env.SOCKET_ORIGIN || "*",
     origin: ["https://quickchat-78zv.onrender.com",
-      "https://<YOUR-VERCEL-APP>.vercel.app"
+      "https://quickchat-jrcode.vercel.app"
     ],
     methods: ["GET", "POST"]
   },
@@ -43,7 +43,7 @@ io.on('connection', (socket) => {
       users: [],
       messages: []
     });
-    console.log("Room crated:",roomID);
+    console.log("Room crated:", roomID);
     cb({
       success: true
     });
