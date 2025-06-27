@@ -9,7 +9,9 @@ app.use(cors());
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: process.env.SOCKET_ORIGIN || '*',
+    // origin: process.env.SOCKET_ORIGIN || '*',
+    origin:"https://quickchat-jrcode.vercel.app",
+    methods: ["GET", "POST"] 
   },
 });
 
